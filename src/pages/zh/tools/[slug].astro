@@ -1,0 +1,52 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const tools = await getCollection('tools');
+  return tools
+    .filter(t => t.data.lang === 'zh')
+    .map(tool => ({
+      params: { slug: tool.id.replace(/\.md$/, '') },
+      props: { tool },
+    }));
+}
+
+const { tool } = Astro.props;
+const { Content } = await render(tool);
+
+const siteUrl = 'https://nomad.guide';
+const toolUrl = `${siteUrl}/zh/tools/${tool.id.replace(/\.md$/, '')}`;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: tool.data.title,
+  description: tool.data.description,
+  applicationCategory: tool.data.category,
+  operatingSystem: 'Web',
+  url: toolUrl,
+  inLanguage: 'zh',
+};
+---
+
+<Layout title={`${tool.data.title} — Nomad`} description={tool.data.description}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    <link rel="canonical" href={toolUrl} />
+    <link rel="alternate" hreflang="zh" href={toolUrl} />
+    <link rel="alternate" hreflang="en" href={`${siteUrl}/en/tools/${tool.id.replace(/\.md$/, '')}`} />
+    <link rel="alternate" hreflang="x-default" href={`${siteUrl}/zh/tools`} />
+  </Fragment>
+
+  <article class="max-w-3xl mx-auto">
+    <header class="mb-8">
+      <span class="text-xs text-blue-600 uppercase tracking-wide">{tool.data.category}</span>
+      <h1 class="text-3xl font-bold mt-2 mb-2">{tool.data.title}</h1>
+      <p class="text-gray-600">{tool.data.description}</p>
+    </header>
+    <div class="prose prose-lg max-w-prose mx-auto">
+      <Content />
+    </div>
+  </article>
+</Layout>

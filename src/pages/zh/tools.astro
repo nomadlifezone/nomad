@@ -1,0 +1,30 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const tools = await getCollection('tools');
+const zhTools = tools.filter(t => t.data.lang === 'zh');
+---
+
+<Layout title="工具 — Nomad">
+  <section class="py-8">
+    <h1 class="text-3xl font-bold mb-6">工具</h1>
+    <p class="text-gray-600 mb-8">日常生活中实用的工具合集。</p>
+
+    {zhTools.length === 0 ? (
+      <div class="text-center py-12 text-gray-500">
+        <p>暂无工具，即将上线。</p>
+      </div>
+    ) : (
+      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {zhTools.map(tool => (
+          <a href={`/zh/tools/${tool.id.replace(/\.md$/, '')}`} class="block border rounded-lg p-6 hover:shadow-lg transition-shadow">
+            <span class="text-xs text-blue-600 uppercase tracking-wide">{tool.data.category}</span>
+            <h2 class="text-xl font-semibold mt-2 mb-2">{tool.data.title}</h2>
+            <p class="text-gray-600 text-sm">{tool.data.description}</p>
+          </a>
+        ))}
+      </div>
+    )}
+  </section>
+</Layout>

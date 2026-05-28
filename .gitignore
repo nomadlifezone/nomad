@@ -1,0 +1,61 @@
+# Build output
+dist/
+
+# Astro types & cache
+.astro/
+.rollup.cache/
+
+# Dependencies
+node_modules/
+
+# Build artifacts
+.npm/
+.eslintcache
+.pnpm-store/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment variables
+.env
+.env.production
+.env.local
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+Thumbs.db
+
+# Tailwind CSS (Vite plugin)
+.tailwindcss/
+*.css.ts
+
+# Cloudflare Pages
+.functions/
+public/_headers
+public/_redirects
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+
+# Temporary files
+*.tmp
+*.temp
+.tmp/
+temp/

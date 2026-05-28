@@ -1,0 +1,40 @@
+---
+interface Props {
+  src?: string;
+  youtube?: string;
+  caption?: string;
+  class?: string;
+}
+
+const { src, youtube, caption, class: className = '' } = Astro.props;
+---
+
+<figure class="my-6 sm:my-8">
+  <div class={`rounded-lg overflow-hidden ${className}`}>
+    {youtube ? (
+      <div class="relative pb-[56.25%] h-0">
+        <iframe
+          src={`https://www.youtube.com/embed/${youtube}`}
+          title="YouTube video"
+          loading="lazy"
+          class="absolute top-0 left-0 w-full h-full"
+          allowfullscreen
+        ></iframe>
+      </div>
+    ) : src ? (
+      <video
+        src={src}
+        controls
+        preload="metadata"
+        class="w-full h-auto"
+      >
+        <p>Your browser doesn't support HTML video.</p>
+      </video>
+    ) : null}
+  </div>
+  {caption && (
+    <figcaption class="mt-2 text-sm text-muted text-center italic">
+      {caption}
+    </figcaption>
+  )}
+</figure>

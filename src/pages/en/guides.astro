@@ -1,0 +1,34 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const guides = await getCollection('guides');
+const enGuides = guides.filter(g => g.data.lang === 'en');
+---
+
+<Layout title="Guides — Nomad">
+  <section class="py-8">
+    <h1 class="text-3xl font-bold mb-6">Guides</h1>
+    <p class="text-gray-600 mb-8">In-depth guides for navigating life as a global nomad.</p>
+
+    {enGuides.length === 0 ? (
+      <div class="text-center py-12 text-gray-500">
+        <p>No guides yet. Check back soon!</p>
+      </div>
+    ) : (
+      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {enGuides.map(guide => (
+          <a href={`/en/guides/${guide.id.replace(/\.md$/, '')}`} class="block border rounded-lg p-6 hover:shadow-lg transition-shadow">
+            <h2 class="text-xl font-semibold mb-2">{guide.data.title}</h2>
+            <p class="text-gray-600 text-sm mb-4">{guide.data.description}</p>
+            <div class="flex flex-wrap gap-2">
+              {guide.data.tags.slice(0, 3).map(tag => (
+                <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">{tag}</span>
+              ))}
+            </div>
+          </a>
+        ))}
+      </div>
+    )}
+  </section>
+</Layout>
