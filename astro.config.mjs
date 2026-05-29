@@ -9,7 +9,8 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://nomad.guide', // Update this when domain is registered
+  site: 'https://nomadlifezone.github.io',
+  base: '/nomad',
   vite: {
     plugins: [tailwindcss()]
   },
