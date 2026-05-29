@@ -2,28 +2,48 @@
 import Layout from '../../../layouts/Layout.astro';
 import { getCollection, render } from 'astro:content';
 import AdUnit from '../../../components/AdUnit.astro';
+import { extractContentByLang, getDifficultyText, getLocalizedString, getLocalizedArray } from '../../../utils/i18n';
 
 export async function getStaticPaths() {
   const guides = await getCollection('guides');
-  return guides
-    .filter(g => g.data.lang === 'zh')
+  
+  // 过滤出中文文件（ID以'zh'结尾）
+  const zhGuides = guides
+    .filter(g => g.id.endsWith('zh'))
     .map(guide => ({
-      params: { slug: guide.id.replace(/\.md$/, '') },
+      params: { slug: guide.id.replace(/zh$/, '') }, // 删除末尾的'zh'
       props: { guide },
     }));
+  
+  return zhGuides;
 }
 
 const { guide } = Astro.props;
+const lang = 'zh';
+
+// 获取不带语言后缀的 slug，用于语言切换
+// alipay-guidezh -> alipay-guide
+const baseSlug = guide.id.replace(/(zh|en)$/, '');
+
+// 获取当前语言的字段
+const title = getLocalizedString(guide.data.title, lang);
+const description = getLocalizedString(guide.data.description, lang);
+const tags = getLocalizedArray(guide.data.tags, lang);
+const location = getLocalizedString(guide.data.location, lang);
+const duration = getLocalizedString(guide.data.duration, lang);
+const difficulty = guide.data.difficulty ? getDifficultyText(guide.data.difficulty, lang) : '';
+
+// 渲染内容
 const { Content } = await render(guide);
 
 const siteUrl = 'https://nomad.guide';
-const articleUrl = `${siteUrl}/zh/guides/${guide.id.replace(/\.md$/, '')}`;
+const articleUrl = `${siteUrl}/zh/guides/${baseSlug}`;
 
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Article',
-  headline: guide.data.title,
-  description: guide.data.description,
+  headline: title,
+  description: description,
   image: guide.data.coverImage,
   datePublished: guide.data.publishedAt.toISOString(),
   dateModified: (guide.data.updatedAt || guide.data.publishedAt).toISOString(),
@@ -34,24 +54,51 @@ const jsonLd = {
 };
 ---
 
-<Layout title={`${guide.data.title} — Nomad`} description={guide.data.description} lang="zh">
+<Layout title={`${title} — Nomad`} description={description} lang="zh">
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
     <link rel="canonical" href={articleUrl} />
     <link rel="alternate" hreflang="zh" href={articleUrl} />
-    <link rel="alternate" hreflang="en" href={`${siteUrl}/en/guides/${guide.id.replace(/\.md$/, '')}`} />
-    <link rel="alternate" hreflang="x-default" href={`${siteUrl}/en`} />
+    <link rel="alternate" hreflang="en" href={`${siteUrl}/en/guides/${baseSlug}`} />
+    <link rel="alternate" hreflang="x-default" href={`${siteUrl}/en/guides/${baseSlug}`} />
   </Fragment>
 
   <article class="max-w-3xl mx-auto">
     <header class="mb-8 animate-fade-up">
-      <h1 class="text-4xl font-bold mb-4 gradient-text">{guide.data.title}</h1>
-      <p class="text-lg text-slate-600">{guide.data.description}</p>
+      <!-- 图标和分类信息 -->
+      {guide.data.icon && (
+        <div class="text-5xl mb-4">{guide.data.icon}</div>
+      )}
+      
+      <h1 class="text-4xl font-bold mb-4 gradient-text">{title}</h1>
+      <p class="text-lg text-slate-600">{description}</p>
+      
+      <!-- 元信息标签 -->
       <div class="flex flex-wrap gap-2 mt-4">
-        {guide.data.tags.map(tag => (
-          <span class="px-3 py-1 bg-purple-100 text-purple-700 text-xs rounded-full font-medium">{tag}</span>
+        {difficulty && (
+          <span class="px-3 py-1 bg-blue-100 text-blue-700 text-xs rounded-full font-medium">
+            {difficulty}
+          </span>
+        )}
+        {duration && (
+          <span class="px-3 py-1 bg-green-100 text-green-700 text-xs rounded-full font-medium">
+            ⏱️ {duration}
+          </span>
+        )}
+        {location && (
+          <span class="px-3 py-1 bg-purple-100 text-purple-700 text-xs rounded-full font-medium">
+            📍 {location}
+          </span>
+        )}
+      </div>
+      
+      <!-- 标签 -->
+      <div class="flex flex-wrap gap-2 mt-3">
+        {tags && tags.map(tag => (
+          <span class="px-3 py-1 bg-slate-100 text-slate-700 text-xs rounded-full font-medium">{tag}</span>
         ))}
       </div>
+      
       <time class="text-sm text-slate-500 mt-4 block">
         {new Date(guide.data.publishedAt).toLocaleDateString('zh-CN', {
           year: 'numeric', month: 'long', day: 'numeric'

@@ -47,6 +47,35 @@ const langPrefix = lang === 'zh' ? '/zh' : '/en';
       crossorigin="anonymous"></script>
     
     <slot name="head" />
+    
+    <script>
+      // 语言切换脚本
+      document.addEventListener('DOMContentLoaded', () => {
+        const langButtons = document.querySelectorAll('[data-lang-btn]');
+        
+        langButtons.forEach(btn => {
+          btn.addEventListener('click', () => {
+            const targetLang = btn.getAttribute('data-lang-btn');
+            const currentPath = window.location.pathname;
+            
+            // 根据当前路径判断语言并切换
+            let newPath;
+            if (currentPath.includes('/zh/')) {
+              newPath = currentPath.replace('/zh/', `/${targetLang}/`);
+            } else if (currentPath.includes('/en/')) {
+              newPath = currentPath.replace('/en/', `/${targetLang}/`);
+            } else if (currentPath === '/' || currentPath.endsWith('/nomad/') || currentPath.endsWith('/nomad')) {
+              newPath = `/${targetLang}`;
+            } else {
+              // 其他情况，跳转到对应语言的首页
+              newPath = `/${targetLang}`;
+            }
+            
+            window.location.href = newPath;
+          });
+        });
+      });
+    </script>
   </head>
   <body class="min-h-screen flex flex-col">
     <header class="sticky top-0 z-50 glass">
@@ -60,8 +89,8 @@ const langPrefix = lang === 'zh' ? '/zh' : '/en';
           <a href={joinPath(`${langPrefix}/guides`)} class="text-sm font-semibold text-slate-700 hover:text-purple-600 transition-all hover:scale-105">{navText.guides}</a>
           <a href={joinPath(`${langPrefix}/tools`)} class="text-sm font-semibold text-slate-700 hover:text-purple-600 transition-all hover:scale-105">{navText.tools}</a>
           <div class="flex items-center gap-3 text-sm border-l border-slate-300 pl-6">
-            <a 
-              href={joinPath('/en')} 
+            <button 
+              data-lang-btn="en"
               class={`px-3 py-1.5 rounded-full transition-all font-medium ${
                 lang === 'en' 
                   ? 'bg-gradient-to-r from-purple-500 to-purple-600 text-white shadow-lg shadow-purple-500/30' 
@@ -69,9 +98,9 @@ const langPrefix = lang === 'zh' ? '/zh' : '/en';
               }`}
             >
               EN
-            </a>
-            <a 
-              href={joinPath('/zh')} 
+            </button>
+            <button 
+              data-lang-btn="zh"
               class={`px-3 py-1.5 rounded-full transition-all font-medium ${
                 lang === 'zh' 
                   ? 'bg-gradient-to-r from-purple-500 to-purple-600 text-white shadow-lg shadow-purple-500/30' 
@@ -79,7 +108,7 @@ const langPrefix = lang === 'zh' ? '/zh' : '/en';
               }`}
             >
               中文
-            </a>
+            </button>
           </div>
         </div>
       </nav>

@@ -1,0 +1,72 @@
+---
+interface Props {
+  currentLang: 'zh' | 'en';
+}
+
+const { currentLang } = Astro.props;
+---
+
+<div class="flex items-center gap-3 text-sm border-l border-slate-300 pl-6">
+  <button 
+    data-lang-btn="en"
+    class={`px-3 py-1.5 rounded-full transition-all font-medium ${
+      currentLang === 'en' 
+        ? 'bg-gradient-to-r from-purple-500 to-purple-600 text-white shadow-lg shadow-purple-500/30' 
+        : 'text-slate-600 hover:bg-white hover:shadow-md'
+    }`}
+  >
+    EN
+  </button>
+  <button 
+    data-lang-btn="zh"
+    class={`px-3 py-1.5 rounded-full transition-all font-medium ${
+      currentLang === 'zh' 
+        ? 'bg-gradient-to-r from-purple-500 to-purple-600 text-white shadow-lg shadow-purple-500/30' 
+        : 'text-slate-600 hover:bg-white hover:shadow-md'
+    }`}
+  >
+    中文
+  </button>
+</div>
+
+<script>
+  import { setLanguage, getLanguage } from '../utils/language';
+
+  function updateLanguage(lang: 'zh' | 'en') {
+    setLanguage(lang);
+    
+    // 更新按钮状态
+    document.querySelectorAll('[data-lang-btn]').forEach(btn => {
+      const btnLang = btn.getAttribute('data-lang-btn');
+      if (btnLang === lang) {
+        btn.className = 'px-3 py-1.5 rounded-full transition-all font-medium bg-gradient-to-r from-purple-500 to-purple-600 text-white shadow-lg shadow-purple-500/30';
+      } else {
+        btn.className = 'px-3 py-1.5 rounded-full transition-all font-medium text-slate-600 hover:bg-white hover:shadow-md';
+      }
+    });
+    
+    // 切换内容显示
+    document.querySelectorAll('[data-lang-content]').forEach(el => {
+      const contentLang = el.getAttribute('data-lang-content');
+      if (contentLang === lang) {
+        (el as HTMLElement).style.display = '';
+      } else {
+        (el as HTMLElement).style.display = 'none';
+      }
+    });
+  }
+
+  // 初始化
+  document.addEventListener('DOMContentLoaded', () => {
+    const currentLang = getLanguage();
+    updateLanguage(currentLang);
+
+    // 绑定按钮点击事件
+    document.querySelectorAll('[data-lang-btn]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const lang = btn.getAttribute('data-lang-btn') as 'zh' | 'en';
+        updateLanguage(lang);
+      });
+    });
+  });
+</script>

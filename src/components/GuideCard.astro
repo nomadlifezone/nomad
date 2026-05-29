@@ -1,0 +1,73 @@
+---
+import { getLocalizedString, getLocalizedArray, getDifficultyText } from '../utils/i18n';
+
+interface Props {
+  guide: any;
+  lang: 'zh' | 'en';
+  href: string;
+  showSubcategory?: boolean;
+  subcategoryInfo?: {
+    icon: string;
+    name: string;
+  };
+}
+
+const { guide, lang, href, showSubcategory = false, subcategoryInfo } = Astro.props;
+
+// 提取本地化字段
+const title = getLocalizedString(guide.data.title, lang);
+const description = getLocalizedString(guide.data.description, lang);
+const duration = getLocalizedString(guide.data.duration, lang);
+const location = getLocalizedString(guide.data.location, lang);
+const difficulty = guide.data.difficulty ? getDifficultyText(guide.data.difficulty, lang) : '';
+const tags = getLocalizedArray(guide.data.tags, lang);
+---
+
+<a 
+  href={href} 
+  class="glass rounded-2xl p-6 card-hover-lift group"
+>
+  <div class="flex items-start gap-3 mb-3">
+    <div class="text-3xl">{guide.data.icon}</div>
+    <div class="flex-1">
+      <div class="flex items-center gap-2 mb-2 flex-wrap">
+        {showSubcategory && subcategoryInfo && (
+          <span class="text-xs px-2 py-1 bg-purple-100 text-purple-700 rounded-full font-medium">
+            {subcategoryInfo.icon} {subcategoryInfo.name}
+          </span>
+        )}
+        {difficulty && (
+          <span class="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded-full">
+            {difficulty}
+          </span>
+        )}
+        {location && (
+          <span class="text-xs px-2 py-1 bg-green-100 text-green-700 rounded-full">
+            📍 {location}
+          </span>
+        )}
+      </div>
+      <h3 class="text-lg font-bold text-slate-800 group-hover:text-purple-600 transition-colors leading-snug">
+        {title}
+      </h3>
+    </div>
+  </div>
+  <p class="text-sm text-slate-600 mb-3 line-clamp-2">{description}</p>
+  <div class="flex items-center gap-3 text-xs text-slate-500">
+    {duration && (
+      <span class="flex items-center gap-1">
+        <span>⏱️</span>
+        <span>{duration}</span>
+      </span>
+    )}
+    {tags && tags.length > 0 && (
+      <div class="flex gap-1 flex-wrap">
+        {tags.slice(0, 3).map(tag => (
+          <span class="px-2 py-0.5 bg-slate-100 text-slate-600 rounded">
+            {tag}
+          </span>
+        ))}
+      </div>
+    )}
+  </div>
+</a>

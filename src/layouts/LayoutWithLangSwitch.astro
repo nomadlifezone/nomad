@@ -1,0 +1,119 @@
+---
+import '../styles/global.css';
+import LanguageSwitcher from '../components/LanguageSwitcher.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const {
+  title,
+  description = 'Your global companion, locally informed',
+} = Astro.props;
+
+const base = import.meta.env.BASE_URL;
+
+function joinPath(path: string) {
+  if (base === '/' || base === '') {
+    return path;
+  }
+  return `${base}${path}`;
+}
+---
+
+<!doctype html>
+<html lang="zh" data-lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#667eea" />
+    <title>{title}</title>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8394297244844946"
+      crossorigin="anonymous"></script>
+    
+    <!-- 初始化语言设置 -->
+    <script>
+      import { initLanguage } from '../utils/language';
+      initLanguage();
+    </script>
+    
+    <style is:global>
+      /* 语言切换样式 */
+      [data-lang-content] {
+        display: none;
+      }
+      
+      html[data-lang="zh"] [data-lang-content="zh"],
+      html[data-lang="en"] [data-lang-content="en"] {
+        display: block;
+      }
+      
+      html[data-lang="zh"] [data-lang-inline="zh"],
+      html[data-lang="en"] [data-lang-inline="en"] {
+        display: inline;
+      }
+      
+      [data-lang-inline] {
+        display: none;
+      }
+    </style>
+    
+    <slot name="head" />
+  </head>
+  <body class="min-h-screen flex flex-col">
+    <header class="sticky top-0 z-50 glass">
+      <nav class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+        <a href={joinPath('/')} class="group flex items-center gap-2">
+          <span class="text-3xl">🌍</span>
+          <span class="text-2xl font-bold gradient-text group-hover:scale-105 transition-transform">Nomad</span>
+        </a>
+
+        <div class="flex items-center gap-8">
+          <a href={joinPath('/guides')} class="text-sm font-semibold text-slate-700 hover:text-purple-600 transition-all hover:scale-105">
+            <span data-lang-inline="zh">📚 攻略</span>
+            <span data-lang-inline="en">📚 Guides</span>
+          </a>
+          <a href={joinPath('/tools')} class="text-sm font-semibold text-slate-700 hover:text-purple-600 transition-all hover:scale-105">
+            <span data-lang-inline="zh">🛠️ 工具</span>
+            <span data-lang-inline="en">🛠️ Tools</span>
+          </a>
+          <LanguageSwitcher currentLang="zh" />
+        </div>
+      </nav>
+    </header>
+
+    <main class="flex-1 max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12 w-full">
+      <slot />
+    </main>
+
+    <footer class="glass mt-auto border-t border-white/20">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 py-12">
+        <div class="text-center space-y-4">
+          <div class="flex justify-center items-center gap-2 text-2xl font-bold">
+            <span>🌍</span>
+            <span class="gradient-text">Nomad</span>
+          </div>
+          <p class="text-slate-600 text-sm max-w-md mx-auto">
+            <span data-lang-content="zh">您的全球旅行伙伴,本地化资讯专家</span>
+            <span data-lang-content="en">Your global companion, locally informed. Explore the world with confidence.</span>
+          </p>
+          <div class="flex justify-center gap-6 pt-4">
+            <a href={joinPath('/guides')} class="text-slate-600 hover:text-purple-600 transition-colors text-sm font-medium">
+              <span data-lang-inline="zh">攻略</span>
+              <span data-lang-inline="en">Guides</span>
+            </a>
+            <a href={joinPath('/tools')} class="text-slate-600 hover:text-purple-600 transition-colors text-sm font-medium">
+              <span data-lang-inline="zh">工具</span>
+              <span data-lang-inline="en">Tools</span>
+            </a>
+          </div>
+          <p class="text-xs text-slate-500 pt-6">© {new Date().getFullYear()} Nomad. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,7 +1,6 @@
 ---
 title: "北京胡同深度游攻略"
 description: "探索老北京的胡同文化，体验最地道的北京生活方式，包含推荐路线和隐藏景点。"
-lang: zh
 category: domestic-travel
 subcategory: city-guides
 icon: 🏛️
@@ -14,7 +13,7 @@ tags:
   - 文化
   - 历史
   - 徒步
-difficulty: 简单
+difficulty: easy
 duration: 1天
 featured: true
 publishedAt: 2026-05-29
@@ -184,13 +183,8 @@ coverImage: "https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=1200
 > 📚 **深度阅读**：推荐阅读《四世同堂》《骆驼祥子》，更好地理解胡同文化。
 
 > 🗣️ **学几句北京话**：
-> - "您吃了吗？"（问候语）
-> - "倍儿棒"（非常好）
-> - "地道"（正宗）
+> - 倍儿棒 = 非常好
+> - 撒丫子 = 快跑
+> - 局气 = 讲义气、大方
 
----
-
-**相关攻略**：
-- [北京故宫一日游攻略](#)
-- [北京地铁使用指南](#)
-- [外国人在中国使用支付宝指南](/zh/guides/china-vpn-guide)
+祝您在北京胡同的探索之旅愉快！🏛️✨

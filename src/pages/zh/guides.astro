@@ -2,9 +2,13 @@
 import Layout from '../../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
 import { categories, getCategoryById, getSubcategoryById } from '../../config/categories';
+import GuideCard from '../../components/GuideCard.astro';
 
-const guides = await getCollection('guides');
-const zhGuides = guides.filter(g => g.data.lang === 'zh');
+const allGuides = await getCollection('guides');
+// 过滤出中文文件（ID以'zh'结尾）
+// Astro会将 alipay-guide.zh.md 转换为 alipay-guidezh
+const guides = allGuides.filter(g => g.id.endsWith('zh'));
+const lang = 'zh';
 const base = import.meta.env.BASE_URL;
 
 function joinPath(path: string) {
@@ -12,11 +16,19 @@ function joinPath(path: string) {
   return `${base}${path}`;
 }
 
+// 辅助函数：生成指南链接（移除语言后缀）
+function getGuideHref(guideId: string): string {
+  // guideId format: alipay-guidezh
+  // Remove trailing 'zh' or 'en' to get slug
+  const slug = guideId.replace(/(zh|en)$/, '');
+  return joinPath(`/zh/guides/${slug}`);
+}
+
 // 按分类分组攻略
 const guidesByCategory = new Map();
 
 categories.forEach(cat => {
-  const categoryGuides = zhGuides.filter(g => g.data.category === cat.id);
+  const categoryGuides = guides.filter(g => g.data.category === cat.id);
   if (categoryGuides.length > 0) {
     guidesByCategory.set(cat.id, {
       category: cat,
@@ -39,7 +51,7 @@ categories.forEach(cat => {
 });
 
 // 获取精选攻略
-const featuredGuides = zhGuides.filter(g => g.data.featured).slice(0, 6);
+const featuredGuides = guides.filter(g => g.data.featured).slice(0, 6);
 ---
 
 <Layout title="攻略 — Nomad" lang="zh">
@@ -66,44 +78,21 @@ const featuredGuides = zhGuides.filter(g => g.data.featured).slice(0, 6);
         </div>
         <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {featuredGuides.map((guide) => {
-            const category = getCategoryById(guide.data.category);
             const subcategory = guide.data.subcategory 
               ? getSubcategoryById(guide.data.category, guide.data.subcategory)
               : null;
             
             return (
-              <a 
-                href={joinPath(`/zh/guides/${guide.id.replace(/\.mdx?$/, '')}`)} 
-                class="glass rounded-2xl p-6 card-hover-lift group"
-              >
-                <div class="flex items-start gap-3 mb-3">
-                  <div class="text-3xl">{guide.data.icon}</div>
-                  <div class="flex-1">
-                    <div class="flex items-center gap-2 mb-2">
-                      {subcategory && (
-                        <span class="text-xs px-2 py-1 bg-purple-100 text-purple-700 rounded-full font-medium">
-                          {subcategory.icon} {subcategory.name.zh}
-                        </span>
-                      )}
-                      {guide.data.difficulty && (
-                        <span class="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded-full">
-                          {guide.data.difficulty}
-                        </span>
-                      )}
-                    </div>
-                    <h3 class="text-lg font-bold text-slate-800 group-hover:text-purple-600 transition-colors leading-snug">
-                      {guide.data.title}
-                    </h3>
-                  </div>
-                </div>
-                <p class="text-sm text-slate-600 mb-3 line-clamp-2">{guide.data.description}</p>
-                {guide.data.duration && (
-                  <div class="text-xs text-slate-500 flex items-center gap-1">
-                    <span>⏱️</span>
-                    <span>{guide.data.duration}</span>
-                  </div>
-                )}
-              </a>
+              <GuideCard
+                guide={guide}
+                lang={lang}
+                href={getGuideHref(guide.id)}
+                showSubcategory={true}
+                subcategoryInfo={subcategory ? {
+                  icon: subcategory.icon || '',
+                  name: subcategory.name.zh
+                } : undefined}
+              />
             );
           })}
         </div>
@@ -136,49 +125,11 @@ const featuredGuides = zhGuides.filter(g => g.data.featured).slice(0, 6);
                 </h3>
                 <div class="grid gap-6 md:grid-cols-2">
                   {subData.guides.map((guide) => (
-                    <a 
-                      href={joinPath(`/zh/guides/${guide.id.replace(/\.mdx?$/, '')}`)} 
-                      class="glass rounded-2xl p-6 card-hover-lift group"
-                    >
-                      <div class="flex items-start gap-3 mb-3">
-                        <div class="text-3xl">{guide.data.icon}</div>
-                        <div class="flex-1">
-                          <div class="flex items-center gap-2 mb-2">
-                            {guide.data.difficulty && (
-                              <span class="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded-full">
-                                {guide.data.difficulty}
-                              </span>
-                            )}
-                            {guide.data.location && (
-                              <span class="text-xs px-2 py-1 bg-green-100 text-green-700 rounded-full">
-                                📍 {guide.data.location}
-                              </span>
-                            )}
-                          </div>
-                          <h4 class="text-lg font-bold text-slate-800 group-hover:text-purple-600 transition-colors leading-snug mb-2">
-                            {guide.data.title}
-                          </h4>
-                        </div>
-                      </div>
-                      <p class="text-sm text-slate-600 mb-3 line-clamp-2">{guide.data.description}</p>
-                      <div class="flex items-center gap-3 text-xs text-slate-500">
-                        {guide.data.duration && (
-                          <span class="flex items-center gap-1">
-                            <span>⏱️</span>
-                            <span>{guide.data.duration}</span>
-                          </span>
-                        )}
-                        {guide.data.tags && guide.data.tags.length > 0 && (
-                          <div class="flex gap-1 flex-wrap">
-                            {guide.data.tags.slice(0, 3).map(tag => (
-                              <span class="px-2 py-0.5 bg-slate-100 text-slate-600 rounded">
-                                {tag}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    </a>
+                    <GuideCard
+                      guide={guide}
+                      lang={lang}
+                      href={getGuideHref(guide.id)}
+                    />
                   ))}
                 </div>
               </div>
@@ -188,49 +139,11 @@ const featuredGuides = zhGuides.filter(g => g.data.featured).slice(0, 6);
           /* 没有子分类，直接展示所有攻略 */
           <div class="grid gap-6 md:grid-cols-2">
             {data.guides.map((guide) => (
-              <a 
-                href={joinPath(`/zh/guides/${guide.id.replace(/\.mdx?$/, '')}`)} 
-                class="glass rounded-2xl p-6 card-hover-lift group"
-              >
-                <div class="flex items-start gap-3 mb-3">
-                  <div class="text-3xl">{guide.data.icon}</div>
-                  <div class="flex-1">
-                    <div class="flex items-center gap-2 mb-2">
-                      {guide.data.difficulty && (
-                        <span class="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded-full">
-                          {guide.data.difficulty}
-                        </span>
-                      )}
-                      {guide.data.location && (
-                        <span class="text-xs px-2 py-1 bg-green-100 text-green-700 rounded-full">
-                          📍 {guide.data.location}
-                        </span>
-                      )}
-                    </div>
-                    <h4 class="text-lg font-bold text-slate-800 group-hover:text-purple-600 transition-colors leading-snug mb-2">
-                      {guide.data.title}
-                    </h4>
-                  </div>
-                </div>
-                <p class="text-sm text-slate-600 mb-3 line-clamp-2">{guide.data.description}</p>
-                <div class="flex items-center gap-3 text-xs text-slate-500">
-                  {guide.data.duration && (
-                    <span class="flex items-center gap-1">
-                      <span>⏱️</span>
-                      <span>{guide.data.duration}</span>
-                    </span>
-                  )}
-                  {guide.data.tags && guide.data.tags.length > 0 && (
-                    <div class="flex gap-1 flex-wrap">
-                      {guide.data.tags.slice(0, 3).map(tag => (
-                        <span class="px-2 py-0.5 bg-slate-100 text-slate-600 rounded">
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </a>
+              <GuideCard
+                guide={guide}
+                lang={lang}
+                href={getGuideHref(guide.id)}
+              />
             ))}
           </div>
         )}
@@ -238,7 +151,7 @@ const featuredGuides = zhGuides.filter(g => g.data.featured).slice(0, 6);
     ))}
 
     {/* 如果没有任何攻略 */}
-    {zhGuides.length === 0 && (
+    {guides.length === 0 && (
       <div class="text-center py-20">
         <div class="glass rounded-3xl p-12 max-w-md mx-auto">
           <div class="text-6xl mb-6">🚧</div>

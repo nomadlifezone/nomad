@@ -1,0 +1,102 @@
+---
+import LayoutWithLangSwitch from '../layouts/LayoutWithLangSwitch.astro';
+import { getCollection } from 'astro:content';
+
+const tools = await getCollection('tools');
+const base = import.meta.env.BASE_URL;
+
+function joinPath(path: string) {
+  if (base === '/' || base === '') return path;
+  return `${base}${path}`;
+}
+---
+
+<LayoutWithLangSwitch title="工具 — Nomad">
+  <section class="py-8">
+    <!-- Header -->
+    <div class="text-center mb-16 animate-fade-up">
+      <div class="inline-block mb-4">
+        <span class="text-6xl animate-float">🛠️</span>
+      </div>
+      
+      <!-- 中文标题 -->
+      <div data-lang-content="zh">
+        <h1 class="text-4xl sm:text-5xl font-bold mb-4">
+          <span class="gradient-text">实用工具合集</span>
+        </h1>
+        <p class="text-xl text-slate-600 max-w-2xl mx-auto">
+          日常生活中的便捷工具，让你的旅程更轻松
+        </p>
+      </div>
+
+      <!-- 英文标题 -->
+      <div data-lang-content="en">
+        <h1 class="text-4xl sm:text-5xl font-bold mb-4">
+          <span class="gradient-text">Practical Tools Collection</span>
+        </h1>
+        <p class="text-xl text-slate-600 max-w-2xl mx-auto">
+          Essential utilities to make your journey smoother
+        </p>
+      </div>
+    </div>
+
+    {tools.length === 0 ? (
+      <div class="text-center py-20">
+        <div class="glass rounded-3xl p-12 max-w-md mx-auto">
+          <div class="text-6xl mb-6">🚧</div>
+          <p class="text-xl text-slate-600" data-lang-content="zh">工具正在开发中，敬请期待！</p>
+          <p class="text-xl text-slate-600" data-lang-content="en">Tools are under development, stay tuned!</p>
+        </div>
+      </div>
+    ) : (
+      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {tools.map((tool, index) => {
+          const categoryColors = {
+            'finance': 'bg-yellow-100 text-yellow-700',
+            'transportation': 'bg-blue-100 text-blue-700',
+            'lifestyle': 'bg-green-100 text-green-700',
+          };
+          const categoryColor = categoryColors[tool.data.category] || 'bg-purple-100 text-purple-700';
+          
+          return (
+            <a 
+              href={joinPath(`/tools/${tool.id.replace(/\.md$/, '')}`)} 
+              class={`glass rounded-2xl p-6 card-hover-lift animate-fade-up animate-delay-${(index % 3 + 1) * 100}`}
+            >
+              <span class={`text-xs uppercase tracking-wide font-semibold ${categoryColor} px-3 py-1 rounded-full inline-block mb-3`}>
+                {tool.data.category}
+              </span>
+              <h2 class="text-xl font-bold mb-2 text-slate-800">{tool.data.title}</h2>
+              <p class="text-slate-600 text-sm">{tool.data.description}</p>
+            </a>
+          );
+        })}
+      </div>
+    )}
+
+    <!-- CTA -->
+    <div class="mt-20 text-center glass rounded-3xl p-12 animate-fade-up animate-delay-400">
+      <div class="text-5xl mb-4">📚</div>
+      
+      <!-- 中文 CTA -->
+      <div data-lang-content="zh">
+        <h3 class="text-2xl font-bold mb-4 text-slate-800">需要更多指南？</h3>
+        <p class="text-slate-600 mb-6">查看我们的深度攻略，了解更多本地生活技巧</p>
+        <a href={joinPath('/guides')} class="btn-secondary inline-flex items-center gap-2">
+          <span>📚</span>
+          <span>浏览攻略</span>
+        </a>
+      </div>
+
+      <!-- 英文 CTA -->
+      <div data-lang-content="en">
+        <h3 class="text-2xl font-bold mb-4 text-slate-800">Need More Guidance?</h3>
+        <p class="text-slate-600 mb-6">Check out our in-depth guides to learn more local living tips</p>
+        <a href={joinPath('/guides')} class="btn-secondary inline-flex items-center gap-2">
+          <span>📚</span>
+          <span>Browse Guides</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</LayoutWithLangSwitch>

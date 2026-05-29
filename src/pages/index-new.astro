@@ -1,0 +1,159 @@
+---
+import LayoutWithLangSwitch from '../layouts/LayoutWithLangSwitch.astro';
+import AdUnit from '../components/AdUnit.astro';
+
+const base = import.meta.env.BASE_URL;
+
+function joinPath(path: string) {
+  if (base === '/' || base === '') return path;
+  return `${base}${path}`;
+}
+---
+
+<LayoutWithLangSwitch title="Nomad — Your global companion, locally informed">
+  <!-- Hero Section -->
+  <section class="text-center py-20 px-4">
+    <div class="animate-fade-up">
+      <div class="inline-block mb-6">
+        <span class="text-7xl animate-float inline-block">🌍</span>
+      </div>
+      
+      <!-- 中文标题 -->
+      <div data-lang-content="zh">
+        <h1 class="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
+          <span class="gradient-text">您的全球旅行伙伴</span>
+          <br />
+          <span class="text-slate-800">本地化资讯专家</span>
+        </h1>
+        <p class="text-xl sm:text-2xl text-slate-600 mb-10 max-w-2xl mx-auto animate-fade-up animate-delay-200">
+          为数字游民和全球旅行者提供必备指南和实用工具
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center animate-fade-up animate-delay-300">
+          <a href={joinPath('/guides')} class="btn-primary inline-flex items-center gap-2">
+            <span>📚</span>
+            <span>浏览攻略</span>
+          </a>
+          <a href={joinPath('/tools')} class="btn-secondary inline-flex items-center gap-2">
+            <span>🛠️</span>
+            <span>实用工具</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- 英文标题 -->
+      <div data-lang-content="en">
+        <h1 class="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
+          <span class="gradient-text">Your Global Companion</span>
+          <br />
+          <span class="text-slate-800">Locally Informed</span>
+        </h1>
+        <p class="text-xl sm:text-2xl text-slate-600 mb-10 max-w-2xl mx-auto animate-fade-up animate-delay-200">
+          Essential guides and tools for digital nomads and travelers worldwide
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center animate-fade-up animate-delay-300">
+          <a href={joinPath('/guides')} class="btn-primary inline-flex items-center gap-2">
+            <span>📚</span>
+            <span>Explore Guides</span>
+          </a>
+          <a href={joinPath('/tools')} class="btn-secondary inline-flex items-center gap-2">
+            <span>🛠️</span>
+            <span>Browse Tools</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="py-16 px-4">
+    <div class="max-w-5xl mx-auto">
+      <!-- 中文特性 -->
+      <div data-lang-content="zh">
+        <h2 class="text-3xl font-bold text-center mb-12 animate-fade-up">
+          <span class="gradient-text">✨ 为什么选择 Nomad?</span>
+        </h2>
+        <div class="grid gap-8 md:grid-cols-3">
+          <div class="glass rounded-2xl p-8 card-hover-lift animate-fade-up animate-delay-100">
+            <div class="text-5xl mb-4">🎯</div>
+            <h3 class="text-xl font-bold mb-3 text-slate-800">本地专业知识</h3>
+            <p class="text-slate-600">深度本地化攻略,帮助您在任何地方像当地人一样生活</p>
+          </div>
+          <div class="glass rounded-2xl p-8 card-hover-lift animate-fade-up animate-delay-200">
+            <div class="text-5xl mb-4">📊</div>
+            <h3 class="text-xl font-bold mb-3 text-slate-800">实用工具</h3>
+            <p class="text-slate-600">货币转换器、交通信息等必备工具</p>
+          </div>
+          <div class="glass rounded-2xl p-8 card-hover-lift animate-fade-up animate-delay-300">
+            <div class="text-5xl mb-4">🌐</div>
+            <h3 class="text-xl font-bold mb-3 text-slate-800">多语言支持</h3>
+            <p class="text-slate-600">中英双语内容,无缝切换体验</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 英文特性 -->
+      <div data-lang-content="en">
+        <h2 class="text-3xl font-bold text-center mb-12 animate-fade-up">
+          <span class="gradient-text">✨ Why Choose Nomad?</span>
+        </h2>
+        <div class="grid gap-8 md:grid-cols-3">
+          <div class="glass rounded-2xl p-8 card-hover-lift animate-fade-up animate-delay-100">
+            <div class="text-5xl mb-4">🎯</div>
+            <h3 class="text-xl font-bold mb-3 text-slate-800">Local Expertise</h3>
+            <p class="text-slate-600">In-depth local guides to help you live like a local, anywhere</p>
+          </div>
+          <div class="glass rounded-2xl p-8 card-hover-lift animate-fade-up animate-delay-200">
+            <div class="text-5xl mb-4">📊</div>
+            <h3 class="text-xl font-bold mb-3 text-slate-800">Practical Tools</h3>
+            <p class="text-slate-600">Currency converters, transit info, and more essential utilities</p>
+          </div>
+          <div class="glass rounded-2xl p-8 card-hover-lift animate-fade-up animate-delay-300">
+            <div class="text-5xl mb-4">🌐</div>
+            <h3 class="text-xl font-bold mb-3 text-slate-800">Multi-Language</h3>
+            <p class="text-slate-600">Content in English and Chinese for seamless experience</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-20 px-4">
+    <div class="max-w-3xl mx-auto text-center glass rounded-3xl p-12 animate-fade-up">
+      <div class="text-6xl mb-6 animate-float">🚀</div>
+      
+      <!-- 中文 CTA -->
+      <div data-lang-content="zh">
+        <h2 class="text-4xl font-bold mb-6">
+          <span class="gradient-text">开始您的旅程</span>
+        </h2>
+        <p class="text-xl text-slate-600 mb-8">
+          加入数千名数字游民,探索世界各地的本地生活
+        </p>
+        <a href={joinPath('/guides')} class="btn-primary inline-flex items-center gap-2">
+          <span>🌟</span>
+          <span>立即开始</span>
+        </a>
+      </div>
+
+      <!-- 英文 CTA -->
+      <div data-lang-content="en">
+        <h2 class="text-4xl font-bold mb-6">
+          <span class="gradient-text">Start Your Journey</span>
+        </h2>
+        <p class="text-xl text-slate-600 mb-8">
+          Join thousands of digital nomads exploring local life around the world
+        </p>
+        <a href={joinPath('/guides')} class="btn-primary inline-flex items-center gap-2">
+          <span>🌟</span>
+          <span>Get Started</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 广告位: 首页底部 -->
+  <section class="py-8 px-4">
+    <AdUnit slot="1122334455" format="horizontal" />
+  </section>
+</LayoutWithLangSwitch>
