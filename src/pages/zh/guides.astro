@@ -50,8 +50,8 @@ categories.forEach(cat => {
   }
 });
 
-// 获取精选攻略
-const featuredGuides = guides.filter(g => g.data.featured).slice(0, 6);
+// 获取精选政略（显示所有精选）
+const featuredGuides = guides.filter(g => g.data.featured);
 ---
 
 <Layout title="攻略 — Nomad" lang="zh">

@@ -50,8 +50,8 @@ categories.forEach(cat => {
   }
 });
 
-// Get featured guides
-const featuredGuides = guides.filter(g => g.data.featured).slice(0, 6);
+// Get featured guides (show all featured)
+const featuredGuides = guides.filter(g => g.data.featured);
 ---
 
 <Layout title="Guides — Nomad" lang="en">

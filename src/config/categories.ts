@@ -127,6 +127,11 @@ export const categories: Category[] = [
         name: { zh: '出租/网约车', en: 'Taxi/Ride-share' },
         icon: '🚕',
       },
+      {
+        id: 'ride-hailing',
+        name: { zh: '网约车', en: 'Ride-Hailing' },
+        icon: '🚗',
+      },
     ],
   },
   {
@@ -160,6 +165,50 @@ export const categories: Category[] = [
         id: 'finance',
         name: { zh: '金融理财', en: 'Finance' },
         icon: '💰',
+      },
+      {
+        id: 'food-delivery',
+        name: { zh: '外卖订餐', en: 'Food Delivery' },
+        icon: '🍱',
+      },
+      {
+        id: 'online-shopping',
+        name: { zh: '网上购物', en: 'Online Shopping' },
+        icon: '🛒',
+      },
+    ],
+  },
+  {
+    id: 'cultural-experience',
+    name: {
+      zh: '文化体验',
+      en: 'Cultural Experience',
+    },
+    icon: '🎭',
+    description: {
+      zh: '深度体验传统文化和习俗',
+      en: 'Deep dive into traditional culture and customs',
+    },
+    subcategories: [
+      {
+        id: 'tea-culture',
+        name: { zh: '茶文化', en: 'Tea Culture' },
+        icon: '🍵',
+      },
+      {
+        id: 'traditional-arts',
+        name: { zh: '传统艺术', en: 'Traditional Arts' },
+        icon: '🎨',
+      },
+      {
+        id: 'festivals',
+        name: { zh: '节日庆典', en: 'Festivals' },
+        icon: '🎉',
+      },
+      {
+        id: 'cuisine',
+        name: { zh: '美食文化', en: 'Cuisine Culture' },
+        icon: '🍜',
       },
     ],
   },
