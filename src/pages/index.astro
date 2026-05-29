@@ -3,10 +3,13 @@ import Layout from '../layouts/Layout.astro';
 
 const base = import.meta.env.BASE_URL;
 
-// Redirect to Chinese homepage
-if (Astro.request.headers.get('accept-language')?.includes('zh') || true) {
-  return Astro.redirect(`${base}/zh`);
+function joinPath(path: string) {
+  if (base === '/' || base === '') return path;
+  return `${base}${path}`;
 }
+
+// Redirect to Chinese homepage
+return Astro.redirect(joinPath('/zh'));
 ---
 
 <Layout title="Nomad — Your global companion, locally informed">
@@ -14,10 +17,10 @@ if (Astro.request.headers.get('accept-language')?.includes('zh') || true) {
     <h1 class="text-4xl font-bold mb-4">Welcome to Nomad</h1>
     <p class="text-xl text-gray-600 mb-8">Your global companion, locally informed</p>
     <div class="flex gap-4 justify-center">
-      <a href={`${base}/en/guides`} class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+      <a href={joinPath('/en/guides')} class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
         Explore Guides
       </a>
-      <a href={`${base}/en/tools`} class="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+      <a href={joinPath('/en/tools')} class="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
         Browse Tools
       </a>
     </div>

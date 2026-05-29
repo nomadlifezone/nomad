@@ -5,6 +5,11 @@ import { getCollection } from 'astro:content';
 const tools = await getCollection('tools');
 const enTools = tools.filter(t => t.data.lang === 'en' || !t.data.lang);
 const base = import.meta.env.BASE_URL;
+
+function joinPath(path: string) {
+  if (base === '/' || base === '') return path;
+  return `${base}${path}`;
+}
 ---
 
 <Layout title="Tools — Nomad">
@@ -41,7 +46,7 @@ const base = import.meta.env.BASE_URL;
           
           return (
             <a 
-              href={`${base}/en/tools/${tool.id.replace(/\.md$/, '')}`} 
+              href={joinPath(`/en/tools/${tool.id.replace(/\.md$/, '')}`)} 
               class={`glass rounded-2xl p-6 card-hover-lift animate-fade-up animate-delay-${(index % 3 + 1) * 100}`}
             >
               <span class={`text-xs uppercase tracking-wide font-semibold ${categoryColor} px-3 py-1 rounded-full inline-block mb-3`}>
@@ -60,7 +65,7 @@ const base = import.meta.env.BASE_URL;
       <div class="text-5xl mb-4">📚</div>
       <h3 class="text-2xl font-bold mb-4 text-slate-800">Need More Guidance?</h3>
       <p class="text-slate-600 mb-6">Check out our in-depth guides to learn more local living tips</p>
-      <a href={`${base}/en/guides`} class="btn-secondary inline-flex items-center gap-2">
+      <a href={joinPath('/en/guides')} class="btn-secondary inline-flex items-center gap-2">
         <span>📚</span>
         <span>Browse Guides</span>
       </a>

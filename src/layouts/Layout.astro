@@ -12,6 +12,14 @@ const {
 } = Astro.props;
 
 const base = import.meta.env.BASE_URL;
+
+// 路径辅助函数：正确拼接 base 和路径
+function joinPath(path: string) {
+  if (base === '/' || base === '') {
+    return path;
+  }
+  return `${base}${path}`;
+}
 ---
 
 <!doctype html>
@@ -27,17 +35,17 @@ const base = import.meta.env.BASE_URL;
   <body class="min-h-screen flex flex-col">
     <header class="sticky top-0 z-50 glass">
       <nav class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
-        <a href={`${base}/`} class="group flex items-center gap-2">
+        <a href={joinPath('/')} class="group flex items-center gap-2">
           <span class="text-3xl">🌍</span>
           <span class="text-2xl font-bold gradient-text group-hover:scale-105 transition-transform">Nomad</span>
         </a>
 
         <div class="flex items-center gap-8">
-          <a href={`${base}/en/guides`} class="text-sm font-semibold text-slate-700 hover:text-purple-600 transition-all hover:scale-105">📚 Guides</a>
-          <a href={`${base}/en/tools`} class="text-sm font-semibold text-slate-700 hover:text-purple-600 transition-all hover:scale-105">🛠️ Tools</a>
+          <a href={joinPath('/en/guides')} class="text-sm font-semibold text-slate-700 hover:text-purple-600 transition-all hover:scale-105">📚 Guides</a>
+          <a href={joinPath('/en/tools')} class="text-sm font-semibold text-slate-700 hover:text-purple-600 transition-all hover:scale-105">🛠️ Tools</a>
           <div class="flex items-center gap-3 text-sm border-l border-slate-300 pl-6">
-            <a href={`${base}/en`} class="px-3 py-1 rounded-full text-slate-600 hover:bg-white hover:shadow-md transition-all">EN</a>
-            <a href={`${base}/zh`} class="px-3 py-1 rounded-full text-slate-600 hover:bg-white hover:shadow-md transition-all">中文</a>
+            <a href={joinPath('/en')} class="px-3 py-1 rounded-full text-slate-600 hover:bg-white hover:shadow-md transition-all">EN</a>
+            <a href={joinPath('/zh')} class="px-3 py-1 rounded-full text-slate-600 hover:bg-white hover:shadow-md transition-all">中文</a>
           </div>
         </div>
       </nav>
@@ -58,8 +66,8 @@ const base = import.meta.env.BASE_URL;
             Your global companion, locally informed. Explore the world with confidence.
           </p>
           <div class="flex justify-center gap-6 pt-4">
-            <a href={`${base}/en/guides`} class="text-slate-600 hover:text-purple-600 transition-colors text-sm font-medium">Guides</a>
-            <a href={`${base}/en/tools`} class="text-slate-600 hover:text-purple-600 transition-colors text-sm font-medium">Tools</a>
+            <a href={joinPath('/en/guides')} class="text-slate-600 hover:text-purple-600 transition-colors text-sm font-medium">Guides</a>
+            <a href={joinPath('/en/tools')} class="text-slate-600 hover:text-purple-600 transition-colors text-sm font-medium">Tools</a>
           </div>
           <p class="text-xs text-slate-500 pt-6">© {new Date().getFullYear()} Nomad. All rights reserved.</p>
         </div>

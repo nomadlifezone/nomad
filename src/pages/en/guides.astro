@@ -5,6 +5,11 @@ import { getCollection } from 'astro:content';
 const guides = await getCollection('guides');
 const enGuides = guides.filter(g => g.data.lang === 'en');
 const base = import.meta.env.BASE_URL;
+
+function joinPath(path: string) {
+  if (base === '/' || base === '') return path;
+  return `${base}${path}`;
+}
 ---
 
 <Layout title="Guides — Nomad">
@@ -33,7 +38,7 @@ const base = import.meta.env.BASE_URL;
       <div class="grid gap-8 md:grid-cols-2">
         {enGuides.map((guide, index) => (
           <a 
-            href={`${base}/en/guides/${guide.id.replace(/\.mdx?$/, '')}`} 
+            href={joinPath(`/en/guides/${guide.id.replace(/\.mdx?$/, '')}`)} 
             class={`glass rounded-2xl p-8 card-hover-lift group animate-fade-up animate-delay-${(index % 3 + 1) * 100}`}
           >
             <div class="flex items-start gap-4 mb-4">
@@ -84,7 +89,7 @@ const base = import.meta.env.BASE_URL;
       <div class="text-5xl mb-4">✍️</div>
       <h3 class="text-2xl font-bold mb-4 text-slate-800">Can't find what you're looking for?</h3>
       <p class="text-slate-600 mb-6">We're constantly adding new content. Check out our tools or submit feedback</p>
-      <a href={`${base}/en/tools`} class="btn-secondary inline-flex items-center gap-2">
+      <a href={joinPath('/en/tools')} class="btn-secondary inline-flex items-center gap-2">
         <span>🛠️</span>
         <span>Browse Tools</span>
       </a>

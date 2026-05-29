@@ -5,6 +5,11 @@ import { getCollection } from 'astro:content';
 const guides = await getCollection('guides');
 const zhGuides = guides.filter(g => g.data.lang === 'zh');
 const base = import.meta.env.BASE_URL;
+
+function joinPath(path: string) {
+  if (base === '/' || base === '') return path;
+  return `${base}${path}`;
+}
 ---
 
 <Layout title="攻略 — Nomad">
@@ -33,7 +38,7 @@ const base = import.meta.env.BASE_URL;
       <div class="grid gap-8 md:grid-cols-2">
         {zhGuides.map((guide, index) => (
           <a 
-            href={`${base}/zh/guides/${guide.id.replace(/\.mdx?$/, '')}`} 
+            href={joinPath(`/zh/guides/${guide.id.replace(/\.mdx?$/, '')}`)} 
             class={`glass rounded-2xl p-8 card-hover-lift group animate-fade-up animate-delay-${(index % 3 + 1) * 100}`}
           >
             <div class="flex items-start gap-4 mb-4">
@@ -82,7 +87,7 @@ const base = import.meta.env.BASE_URL;
       <div class="text-5xl mb-4">✍️</div>
       <h3 class="text-2xl font-bold mb-4 text-slate-800">没找到你需要的攻略？</h3>
       <p class="text-slate-600 mb-6">我们持续更新内容，欢迎提供反馈和建议</p>
-      <a href={`${base}/zh/tools`} class="btn-secondary inline-flex items-center gap-2">
+      <a href={joinPath('/zh/tools')} class="btn-secondary inline-flex items-center gap-2">
         <span>🛠️</span>
         <span>浏览实用工具</span>
       </a>
