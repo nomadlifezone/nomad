@@ -3,28 +3,67 @@ import Layout from '../../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
 
 const tools = await getCollection('tools');
-const zhTools = tools.filter(t => t.data.lang === 'zh');
+const zhTools = tools.filter(t => t.data.lang === 'zh' || t.data.lang === 'en');
+const base = import.meta.env.BASE_URL;
 ---
 
 <Layout title="工具 — Nomad">
   <section class="py-8">
-    <h1 class="text-3xl font-bold mb-6">工具</h1>
-    <p class="text-gray-600 mb-8">日常生活中实用的工具合集。</p>
+    <!-- Header -->
+    <div class="text-center mb-16 animate-fade-up">
+      <div class="inline-block mb-4">
+        <span class="text-6xl animate-float">🛠️</span>
+      </div>
+      <h1 class="text-4xl sm:text-5xl font-bold mb-4">
+        <span class="gradient-text">实用工具合集</span>
+      </h1>
+      <p class="text-xl text-slate-600 max-w-2xl mx-auto">
+        日常生活中的便捷工具，让你的旅程更轻松
+      </p>
+    </div>
 
     {zhTools.length === 0 ? (
-      <div class="text-center py-12 text-gray-500">
-        <p>暂无工具，即将上线。</p>
+      <div class="text-center py-20">
+        <div class="glass rounded-3xl p-12 max-w-md mx-auto">
+          <div class="text-6xl mb-6">🚧</div>
+          <p class="text-xl text-slate-600">工具正在开发中，敬请期待！</p>
+        </div>
       </div>
     ) : (
       <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {zhTools.map(tool => (
-          <a href={`/zh/tools/${tool.id.replace(/\.md$/, '')}`} class="block border rounded-lg p-6 hover:shadow-lg transition-shadow">
-            <span class="text-xs text-blue-600 uppercase tracking-wide">{tool.data.category}</span>
-            <h2 class="text-xl font-semibold mt-2 mb-2">{tool.data.title}</h2>
-            <p class="text-gray-600 text-sm">{tool.data.description}</p>
-          </a>
-        ))}
+        {zhTools.map((tool, index) => {
+          const categoryColors = {
+            'finance': 'bg-yellow-100 text-yellow-700',
+            'transportation': 'bg-blue-100 text-blue-700',
+            'lifestyle': 'bg-green-100 text-green-700',
+          };
+          const categoryColor = categoryColors[tool.data.category] || 'bg-purple-100 text-purple-700';
+          
+          return (
+            <a 
+              href={`${base}/zh/tools/${tool.id.replace(/\.md$/, '')}`} 
+              class={`glass rounded-2xl p-6 card-hover-lift animate-fade-up animate-delay-${(index % 3 + 1) * 100}`}
+            >
+              <span class={`text-xs uppercase tracking-wide font-semibold ${categoryColor} px-3 py-1 rounded-full inline-block mb-3`}>
+                {tool.data.category}
+              </span>
+              <h2 class="text-xl font-bold mb-2 text-slate-800">{tool.data.title}</h2>
+              <p class="text-slate-600 text-sm">{tool.data.description}</p>
+            </a>
+          );
+        })}
       </div>
     )}
+
+    <!-- CTA -->
+    <div class="mt-20 text-center glass rounded-3xl p-12 animate-fade-up animate-delay-400">
+      <div class="text-5xl mb-4">📚</div>
+      <h3 class="text-2xl font-bold mb-4 text-slate-800">需要更多指南？</h3>
+      <p class="text-slate-600 mb-6">查看我们的深度攻略，了解更多本地生活技巧</p>
+      <a href={`${base}/zh/guides`} class="btn-secondary inline-flex items-center gap-2">
+        <span>📚</span>
+        <span>浏览攻略</span>
+      </a>
+    </div>
   </section>
 </Layout>

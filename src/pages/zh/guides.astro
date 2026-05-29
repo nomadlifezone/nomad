@@ -4,31 +4,88 @@ import { getCollection } from 'astro:content';
 
 const guides = await getCollection('guides');
 const zhGuides = guides.filter(g => g.data.lang === 'zh');
+const base = import.meta.env.BASE_URL;
 ---
 
 <Layout title="攻略 — Nomad">
   <section class="py-8">
-    <h1 class="text-3xl font-bold mb-6">攻略</h1>
-    <p class="text-gray-600 mb-8">环球旅者的本地生活指南。</p>
+    <!-- Header -->
+    <div class="text-center mb-16 animate-fade-up">
+      <div class="inline-block mb-4">
+        <span class="text-6xl animate-float">📚</span>
+      </div>
+      <h1 class="text-4xl sm:text-5xl font-bold mb-4">
+        <span class="gradient-text">环球旅者的本地生活指南</span>
+      </h1>
+      <p class="text-xl text-slate-600 max-w-2xl mx-auto">
+        深度攻略，帮助你在任何城市像当地人一样生活
+      </p>
+    </div>
 
     {zhGuides.length === 0 ? (
-      <div class="text-center py-12 text-gray-500">
-        <p>暂无攻略，即将上线。</p>
+      <div class="text-center py-20">
+        <div class="glass rounded-3xl p-12 max-w-md mx-auto">
+          <div class="text-6xl mb-6">🚧</div>
+          <p class="text-xl text-slate-600">政略正在筹备中，敬请期待！</p>
+        </div>
       </div>
     ) : (
-      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {zhGuides.map(guide => (
-          <a href={`/zh/guides/${guide.id.replace(/\.md$/, '')}`} class="block border rounded-lg p-6 hover:shadow-lg transition-shadow">
-            <h2 class="text-xl font-semibold mb-2">{guide.data.title}</h2>
-            <p class="text-gray-600 text-sm mb-4">{guide.data.description}</p>
+      <div class="grid gap-8 md:grid-cols-2">
+        {zhGuides.map((guide, index) => (
+          <a 
+            href={`${base}/zh/guides/${guide.id.replace(/\.mdx?$/, '')}`} 
+            class={`glass rounded-2xl p-8 card-hover-lift group animate-fade-up animate-delay-${(index % 3 + 1) * 100}`}
+          >
+            <div class="flex items-start gap-4 mb-4">
+              <div class="text-4xl">
+                {guide.data.tags.includes('支付') && '💳'}
+                {guide.data.tags.includes('交通') && '🚇'}
+                {guide.data.tags.includes('金融') && '💰'}
+                {!guide.data.tags.includes('支付') && !guide.data.tags.includes('交通') && !guide.data.tags.includes('金融') && '📝'}
+              </div>
+              <div class="flex-1">
+                <h2 class="text-2xl font-bold mb-3 text-slate-800 group-hover:text-purple-600 transition-colors leading-tight">
+                  {guide.data.title}
+                </h2>
+              </div>
+            </div>
+            <p class="text-slate-600 mb-6 line-clamp-2">{guide.data.description}</p>
             <div class="flex flex-wrap gap-2">
-              {guide.data.tags.slice(0, 3).map(tag => (
-                <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">{tag}</span>
-              ))}
+              {guide.data.tags.slice(0, 4).map(tag => {
+                const colors = {
+                  '支付': 'bg-purple-100 text-purple-700',
+                  '支付宝': 'bg-blue-100 text-blue-700',
+                  '中国': 'bg-green-100 text-green-700',
+                  '数字钱包': 'bg-pink-100 text-pink-700',
+                  '交通': 'bg-orange-100 text-orange-700',
+                  '金融': 'bg-yellow-100 text-yellow-700',
+                };
+                const colorClass = colors[tag] || 'bg-slate-100 text-slate-700';
+                return (
+                  <span class={`px-3 py-1 ${colorClass} text-xs rounded-full font-medium`}>
+                    {tag}
+                  </span>
+                );
+              })}
+            </div>
+            <div class="mt-6 flex items-center text-purple-600 font-semibold text-sm group-hover:gap-2 transition-all">
+              <span>阅读更多</span>
+              <span class="group-hover:translate-x-1 transition-transform">→</span>
             </div>
           </a>
         ))}
       </div>
     )}
+
+    <!-- CTA -->
+    <div class="mt-20 text-center glass rounded-3xl p-12 animate-fade-up animate-delay-400">
+      <div class="text-5xl mb-4">✍️</div>
+      <h3 class="text-2xl font-bold mb-4 text-slate-800">没找到你需要的攻略？</h3>
+      <p class="text-slate-600 mb-6">我们持续更新内容，欢迎提供反馈和建议</p>
+      <a href={`${base}/zh/tools`} class="btn-secondary inline-flex items-center gap-2">
+        <span>🛠️</span>
+        <span>浏览实用工具</span>
+      </a>
+    </div>
   </section>
 </Layout>

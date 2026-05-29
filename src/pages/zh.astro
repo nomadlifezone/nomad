@@ -1,28 +1,113 @@
 ---
 import Layout from '../layouts/Layout.astro';
+
+const base = import.meta.env.BASE_URL;
 ---
 
 <Layout title="Nomad — 走遍全球，立足本地">
-  <section class="text-center py-16">
-    <h1 class="text-4xl font-bold mb-4">欢迎来到 Nomad</h1>
-    <p class="text-xl text-gray-600 mb-8">走遍全球，立足本地</p>
-    <div class="flex gap-4 justify-center">
-      <a href="/zh/guides" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-        浏览攻略
-      </a>
-      <a href="/zh/tools" class="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-        使用工具
-      </a>
+  <!-- Hero Section -->
+  <section class="text-center py-20 px-4">
+    <div class="animate-fade-up">
+      <div class="inline-block mb-6">
+        <span class="text-7xl animate-float inline-block">🌍</span>
+      </div>
+      <h1 class="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
+        <span class="gradient-text">走遍全球</span>
+        <br />
+        <span class="text-slate-800">立足本地</span>
+      </h1>
+      <p class="text-xl sm:text-2xl text-slate-600 mb-10 max-w-2xl mx-auto animate-fade-up animate-delay-200">
+        为数字游民和旅行者打造的本地生活指南
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center animate-fade-up animate-delay-300">
+        <a href={`${base}/zh/guides`} class="btn-primary inline-flex items-center gap-2">
+          <span>📚</span>
+          <span>浏览攻略</span>
+        </a>
+        <a href={`${base}/zh/tools`} class="btn-secondary inline-flex items-center gap-2">
+          <span>🛠️</span>
+          <span>使用工具</span>
+        </a>
+      </div>
     </div>
   </section>
 
-  <section class="py-12">
-    <h2 class="text-2xl font-semibold mb-6">精选攻略</h2>
-    <p class="text-gray-600">即将上线：在中国生活、旅居的深度指南。</p>
+  <!-- Features Section -->
+  <section class="py-16 px-4">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="text-3xl font-bold text-center mb-12 animate-fade-up">
+        <span class="gradient-text">✨ 为什么选择 Nomad？</span>
+      </h2>
+      <div class="grid gap-8 md:grid-cols-3">
+        <div class="glass rounded-2xl p-8 card-hover-lift animate-fade-up animate-delay-100">
+          <div class="text-5xl mb-4">🎯</div>
+          <h3 class="text-xl font-bold mb-3 text-slate-800">本地化指南</h3>
+          <p class="text-slate-600">深度本地生活攻略，让你像当地人一样生活</p>
+        </div>
+        <div class="glass rounded-2xl p-8 card-hover-lift animate-fade-up animate-delay-200">
+          <div class="text-5xl mb-4">📊</div>
+          <h3 class="text-xl font-bold mb-3 text-slate-800">实用工具</h3>
+          <p class="text-slate-600">货币转换、交通查询等实用工具一应俱全</p>
+        </div>
+        <div class="glass rounded-2xl p-8 card-hover-lift animate-fade-up animate-delay-300">
+          <div class="text-5xl mb-4">🌐</div>
+          <h3 class="text-xl font-bold mb-3 text-slate-800">多语言支持</h3>
+          <p class="text-slate-600">中英双语内容，无障碍阅读体验</p>
+        </div>
+      </div>
+    </div>
   </section>
 
-  <section class="py-12">
-    <h2 class="text-2xl font-semibold mb-6">热门工具</h2>
-    <p class="text-gray-600">即将上线：汇率转换、单位换算等实用工具。</p>
+  <!-- Popular Guides Section -->
+  <section class="py-16 px-4">
+    <div class="max-w-5xl mx-auto">
+      <div class="flex items-center justify-between mb-10">
+        <h2 class="text-3xl font-bold">
+          <span class="gradient-text">🔥 热门攻略</span>
+        </h2>
+        <a href={`${base}/zh/guides`} class="text-purple-600 hover:text-purple-700 font-semibold text-sm hover:underline">
+          查看全部 →
+        </a>
+      </div>
+      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
+        <a href={`${base}/zh/guides/how-to-use-alipay-as-foreigner`} class="glass rounded-2xl p-8 card-hover-lift group">
+          <div class="text-4xl mb-4">💳</div>
+          <h3 class="text-2xl font-bold mb-3 text-slate-800 group-hover:text-purple-600 transition-colors">外国人使用支付宝完全指南</h3>
+          <p class="text-slate-600 mb-4">完整指南：如何用外国手机号和国际银行卡注册并使用支付宝</p>
+          <div class="flex gap-2 flex-wrap">
+            <span class="px-3 py-1 bg-purple-100 text-purple-700 text-xs rounded-full font-medium">支付</span>
+            <span class="px-3 py-1 bg-blue-100 text-blue-700 text-xs rounded-full font-medium">支付宝</span>
+            <span class="px-3 py-1 bg-green-100 text-green-700 text-xs rounded-full font-medium">中国</span>
+          </div>
+        </a>
+        <a href={`${base}/zh/guides/china-money-guide`} class="glass rounded-2xl p-8 card-hover-lift group">
+          <div class="text-4xl mb-4">💰</div>
+          <h3 class="text-2xl font-bold mb-3 text-slate-800 group-hover:text-purple-600 transition-colors">在中国管理资金指南</h3>
+          <p class="text-slate-600 mb-4">从货币兑换到移动支付，一站式资金管理解决方案</p>
+          <div class="flex gap-2 flex-wrap">
+            <span class="px-3 py-1 bg-yellow-100 text-yellow-700 text-xs rounded-full font-medium">金融</span>
+            <span class="px-3 py-1 bg-purple-100 text-purple-700 text-xs rounded-full font-medium">支付</span>
+            <span class="px-3 py-1 bg-green-100 text-green-700 text-xs rounded-full font-medium">中国</span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-20 px-4">
+    <div class="max-w-3xl mx-auto text-center glass rounded-3xl p-12 animate-fade-up">
+      <div class="text-6xl mb-6 animate-float">🚀</div>
+      <h2 class="text-4xl font-bold mb-6">
+        <span class="gradient-text">开启你的旅程</span>
+      </h2>
+      <p class="text-xl text-slate-600 mb-8">
+        加入数千名数字游民，探索世界各地的本地生活方式
+      </p>
+      <a href={`${base}/zh/guides`} class="btn-primary inline-flex items-center gap-2">
+        <span>🌟</span>
+        <span>开始探索</span>
+      </a>
+    </div>
   </section>
 </Layout>
