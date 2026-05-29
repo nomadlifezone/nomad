@@ -30,7 +30,7 @@ const jsonLd = {
 };
 ---
 
-<Layout title={`${tool.data.title} — Nomad`} description={tool.data.description}>
+<Layout title={`${tool.data.title} — Nomad`} description={tool.data.description} lang="zh">
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
     <link rel="canonical" href={toolUrl} />

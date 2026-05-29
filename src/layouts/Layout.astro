@@ -4,11 +4,13 @@ import '../styles/global.css';
 interface Props {
   title: string;
   description?: string;
+  lang?: 'zh' | 'en';
 }
 
 const {
   title,
   description = 'Your global companion, locally informed',
+  lang = 'en',
 } = Astro.props;
 
 const base = import.meta.env.BASE_URL;
@@ -20,15 +22,24 @@ function joinPath(path: string) {
   }
   return `${base}${path}`;
 }
+
+// 根据语言获取导航文本
+const navText = {
+  guides: lang === 'zh' ? '📚 攻略' : '📚 Guides',
+  tools: lang === 'zh' ? '🛠️ 工具' : '🛠️ Tools',
+};
+
+// 语言切换链接
+const langPrefix = lang === 'zh' ? '/zh' : '/en';
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#faf9f7" />
+    <meta name="theme-color" content="#667eea" />
     <title>{title}</title>
     <slot name="head" />
   </head>
@@ -41,11 +52,29 @@ function joinPath(path: string) {
         </a>
 
         <div class="flex items-center gap-8">
-          <a href={joinPath('/en/guides')} class="text-sm font-semibold text-slate-700 hover:text-purple-600 transition-all hover:scale-105">📚 Guides</a>
-          <a href={joinPath('/en/tools')} class="text-sm font-semibold text-slate-700 hover:text-purple-600 transition-all hover:scale-105">🛠️ Tools</a>
+          <a href={joinPath(`${langPrefix}/guides`)} class="text-sm font-semibold text-slate-700 hover:text-purple-600 transition-all hover:scale-105">{navText.guides}</a>
+          <a href={joinPath(`${langPrefix}/tools`)} class="text-sm font-semibold text-slate-700 hover:text-purple-600 transition-all hover:scale-105">{navText.tools}</a>
           <div class="flex items-center gap-3 text-sm border-l border-slate-300 pl-6">
-            <a href={joinPath('/en')} class="px-3 py-1 rounded-full text-slate-600 hover:bg-white hover:shadow-md transition-all">EN</a>
-            <a href={joinPath('/zh')} class="px-3 py-1 rounded-full text-slate-600 hover:bg-white hover:shadow-md transition-all">中文</a>
+            <a 
+              href={joinPath('/en')} 
+              class={`px-3 py-1.5 rounded-full transition-all font-medium ${
+                lang === 'en' 
+                  ? 'bg-gradient-to-r from-purple-500 to-purple-600 text-white shadow-lg shadow-purple-500/30' 
+                  : 'text-slate-600 hover:bg-white hover:shadow-md'
+              }`}
+            >
+              EN
+            </a>
+            <a 
+              href={joinPath('/zh')} 
+              class={`px-3 py-1.5 rounded-full transition-all font-medium ${
+                lang === 'zh' 
+                  ? 'bg-gradient-to-r from-purple-500 to-purple-600 text-white shadow-lg shadow-purple-500/30' 
+                  : 'text-slate-600 hover:bg-white hover:shadow-md'
+              }`}
+            >
+              中文
+            </a>
           </div>
         </div>
       </nav>
