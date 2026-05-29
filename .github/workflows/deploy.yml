@@ -5,7 +5,7 @@ on:
   push:
     branches: [main]
   
-  # 允许手动触发
+  # 允许手动触发的
   workflow_dispatch:
 
 # 设置 GITHUB_TOKEN 的权限
