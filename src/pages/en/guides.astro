@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
+import { categories, getCategoryById, getSubcategoryById } from '../../config/categories';
 
 const guides = await getCollection('guides');
 const enGuides = guides.filter(g => g.data.lang === 'en');
@@ -10,6 +11,35 @@ function joinPath(path: string) {
   if (base === '/' || base === '') return path;
   return `${base}${path}`;
 }
+
+// Group guides by category
+const guidesByCategory = new Map();
+
+categories.forEach(cat => {
+  const categoryGuides = enGuides.filter(g => g.data.category === cat.id);
+  if (categoryGuides.length > 0) {
+    guidesByCategory.set(cat.id, {
+      category: cat,
+      guides: categoryGuides,
+      // Group by subcategory
+      bySubcategory: new Map()
+    });
+
+    // Group by subcategory
+    cat.subcategories?.forEach(sub => {
+      const subGuides = categoryGuides.filter(g => g.data.subcategory === sub.id);
+      if (subGuides.length > 0) {
+        guidesByCategory.get(cat.id).bySubcategory.set(sub.id, {
+          subcategory: sub,
+          guides: subGuides
+        });
+      }
+    });
+  }
+});
+
+// Get featured guides
+const featuredGuides = enGuides.filter(g => g.data.featured).slice(0, 6);
 ---
 
 <Layout title="Guides — Nomad" lang="en">
@@ -27,60 +57,193 @@ function joinPath(path: string) {
       </p>
     </div>
 
-    {enGuides.length === 0 ? (
+    <!-- Featured Guides -->
+    {featuredGuides.length > 0 && (
+      <div class="mb-20 animate-fade-up">
+        <div class="flex items-center gap-3 mb-8">
+          <span class="text-3xl">⭐</span>
+          <h2 class="text-3xl font-bold text-slate-800">Featured Guides</h2>
+        </div>
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {featuredGuides.map((guide) => {
+            const category = getCategoryById(guide.data.category);
+            const subcategory = guide.data.subcategory 
+              ? getSubcategoryById(guide.data.category, guide.data.subcategory)
+              : null;
+            
+            return (
+              <a 
+                href={joinPath(`/en/guides/${guide.id.replace(/\.mdx?$/, '')}`)} 
+                class="glass rounded-2xl p-6 card-hover-lift group"
+              >
+                <div class="flex items-start gap-3 mb-3">
+                  <div class="text-3xl">{guide.data.icon}</div>
+                  <div class="flex-1">
+                    <div class="flex items-center gap-2 mb-2">
+                      {subcategory && (
+                        <span class="text-xs px-2 py-1 bg-purple-100 text-purple-700 rounded-full font-medium">
+                          {subcategory.icon} {subcategory.name.en}
+                        </span>
+                      )}
+                      {guide.data.difficulty && (
+                        <span class="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded-full">
+                          {guide.data.difficulty}
+                        </span>
+                      )}
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-800 group-hover:text-purple-600 transition-colors leading-snug">
+                      {guide.data.title}
+                    </h3>
+                  </div>
+                </div>
+                <p class="text-sm text-slate-600 mb-3 line-clamp-2">{guide.data.description}</p>
+                {guide.data.duration && (
+                  <div class="text-xs text-slate-500 flex items-center gap-1">
+                    <span>⏱️</span>
+                    <span>{guide.data.duration}</span>
+                  </div>
+                )}
+              </a>
+            );
+          })}
+        </div>
+      </div>
+    )}
+
+    <!-- Guides by Category -->
+    {Array.from(guidesByCategory.entries()).map(([categoryId, data], catIndex) => (
+      <div class={`mb-20 animate-fade-up animate-delay-${(catIndex + 1) * 100}`}>
+        <!-- Category Title -->
+        <div class="flex items-center gap-3 mb-8">
+          <span class="text-3xl">{data.category.icon}</span>
+          <div>
+            <h2 class="text-3xl font-bold text-slate-800">{data.category.name.en}</h2>
+            {data.category.description && (
+              <p class="text-slate-600 mt-1">{data.category.description.en}</p>
+            )}
+          </div>
+        </div>
+
+        {/* If has subcategories, display by subcategory */}
+        {data.bySubcategory.size > 0 ? (
+          <div class="space-y-12">
+            {Array.from(data.bySubcategory.entries()).map(([subId, subData]) => (
+              <div>
+                <h3 class="text-xl font-bold text-slate-700 mb-4 flex items-center gap-2">
+                  <span>{subData.subcategory.icon}</span>
+                  <span>{subData.subcategory.name.en}</span>
+                  <span class="text-sm font-normal text-slate-500">({subData.guides.length})</span>
+                </h3>
+                <div class="grid gap-6 md:grid-cols-2">
+                  {subData.guides.map((guide) => (
+                    <a 
+                      href={joinPath(`/en/guides/${guide.id.replace(/\.mdx?$/, '')}`)} 
+                      class="glass rounded-2xl p-6 card-hover-lift group"
+                    >
+                      <div class="flex items-start gap-3 mb-3">
+                        <div class="text-3xl">{guide.data.icon}</div>
+                        <div class="flex-1">
+                          <div class="flex items-center gap-2 mb-2">
+                            {guide.data.difficulty && (
+                              <span class="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded-full">
+                                {guide.data.difficulty}
+                              </span>
+                            )}
+                            {guide.data.location && (
+                              <span class="text-xs px-2 py-1 bg-green-100 text-green-700 rounded-full">
+                                📍 {guide.data.location}
+                              </span>
+                            )}
+                          </div>
+                          <h4 class="text-lg font-bold text-slate-800 group-hover:text-purple-600 transition-colors leading-snug mb-2">
+                            {guide.data.title}
+                          </h4>
+                        </div>
+                      </div>
+                      <p class="text-sm text-slate-600 mb-3 line-clamp-2">{guide.data.description}</p>
+                      <div class="flex items-center gap-3 text-xs text-slate-500">
+                        {guide.data.duration && (
+                          <span class="flex items-center gap-1">
+                            <span>⏱️</span>
+                            <span>{guide.data.duration}</span>
+                          </span>
+                        )}
+                        {guide.data.tags && guide.data.tags.length > 0 && (
+                          <div class="flex gap-1 flex-wrap">
+                            {guide.data.tags.slice(0, 3).map(tag => (
+                              <span class="px-2 py-0.5 bg-slate-100 text-slate-600 rounded">
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          /* No subcategories, display all guides directly */
+          <div class="grid gap-6 md:grid-cols-2">
+            {data.guides.map((guide) => (
+              <a 
+                href={joinPath(`/en/guides/${guide.id.replace(/\.mdx?$/, '')}`)} 
+                class="glass rounded-2xl p-6 card-hover-lift group"
+              >
+                <div class="flex items-start gap-3 mb-3">
+                  <div class="text-3xl">{guide.data.icon}</div>
+                  <div class="flex-1">
+                    <div class="flex items-center gap-2 mb-2">
+                      {guide.data.difficulty && (
+                        <span class="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded-full">
+                          {guide.data.difficulty}
+                        </span>
+                      )}
+                      {guide.data.location && (
+                        <span class="text-xs px-2 py-1 bg-green-100 text-green-700 rounded-full">
+                          📍 {guide.data.location}
+                        </span>
+                      )}
+                    </div>
+                    <h4 class="text-lg font-bold text-slate-800 group-hover:text-purple-600 transition-colors leading-snug mb-2">
+                      {guide.data.title}
+                    </h4>
+                  </div>
+                </div>
+                <p class="text-sm text-slate-600 mb-3 line-clamp-2">{guide.data.description}</p>
+                <div class="flex items-center gap-3 text-xs text-slate-500">
+                  {guide.data.duration && (
+                    <span class="flex items-center gap-1">
+                      <span>⏱️</span>
+                      <span>{guide.data.duration}</span>
+                    </span>
+                  )}
+                  {guide.data.tags && guide.data.tags.length > 0 && (
+                    <div class="flex gap-1 flex-wrap">
+                      {guide.data.tags.slice(0, 3).map(tag => (
+                        <span class="px-2 py-0.5 bg-slate-100 text-slate-600 rounded">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </a>
+            ))}
+          </div>
+        )}
+      </div>
+    ))}
+
+    {/* If no guides */}
+    {enGuides.length === 0 && (
       <div class="text-center py-20">
         <div class="glass rounded-3xl p-12 max-w-md mx-auto">
           <div class="text-6xl mb-6">🚧</div>
           <p class="text-xl text-slate-600">Guides coming soon. Stay tuned!</p>
         </div>
-      </div>
-    ) : (
-      <div class="grid gap-8 md:grid-cols-2">
-        {enGuides.map((guide, index) => (
-          <a 
-            href={joinPath(`/en/guides/${guide.id.replace(/\.mdx?$/, '')}`)} 
-            class={`glass rounded-2xl p-8 card-hover-lift group animate-fade-up animate-delay-${(index % 3 + 1) * 100}`}
-          >
-            <div class="flex items-start gap-4 mb-4">
-              <div class="text-4xl">
-                {guide.data.tags.includes('payment') && '💳'}
-                {guide.data.tags.includes('transportation') && '🚇'}
-                {guide.data.tags.includes('finance') && '💰'}
-                {!guide.data.tags.includes('payment') && !guide.data.tags.includes('transportation') && !guide.data.tags.includes('finance') && '📝'}
-              </div>
-              <div class="flex-1">
-                <h2 class="text-2xl font-bold mb-3 text-slate-800 group-hover:text-purple-600 transition-colors leading-tight">
-                  {guide.data.title}
-                </h2>
-              </div>
-            </div>
-            <p class="text-slate-600 mb-6 line-clamp-2">{guide.data.description}</p>
-            <div class="flex flex-wrap gap-2">
-              {guide.data.tags.slice(0, 4).map(tag => {
-                const colors = {
-                  'payment': 'bg-purple-100 text-purple-700',
-                  'alipay': 'bg-blue-100 text-blue-700',
-                  'china': 'bg-green-100 text-green-700',
-                  'digital-wallet': 'bg-pink-100 text-pink-700',
-                  'transportation': 'bg-orange-100 text-orange-700',
-                  'finance': 'bg-yellow-100 text-yellow-700',
-                  'metro': 'bg-red-100 text-red-700',
-                  'shanghai': 'bg-indigo-100 text-indigo-700',
-                };
-                const colorClass = colors[tag] || 'bg-slate-100 text-slate-700';
-                return (
-                  <span class={`px-3 py-1 ${colorClass} text-xs rounded-full font-medium`}>
-                    {tag}
-                  </span>
-                );
-              })}
-            </div>
-            <div class="mt-6 flex items-center text-purple-600 font-semibold text-sm group-hover:gap-2 transition-all">
-              <span>Read More</span>
-              <span class="group-hover:translate-x-1 transition-transform">→</span>
-            </div>
-          </a>
-        ))}
       </div>
     )}
 

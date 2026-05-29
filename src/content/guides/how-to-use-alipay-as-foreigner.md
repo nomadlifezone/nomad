@@ -2,13 +2,20 @@
 title: "How to Use Alipay as a Foreigner in China"
 description: "A complete guide to setting up and using Alipay with a foreign phone number and international bank card."
 lang: en
+category: living-services
+subcategory: payment
+icon: 💳
 country: china
 city: beijing
+location: Nationwide
 tags:
   - payment
   - alipay
   - china
   - digital-wallet
+difficulty: easy
+duration: 30 minutes
+featured: true
 publishedAt: 2026-05-28
 ---
 

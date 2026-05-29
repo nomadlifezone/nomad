@@ -2,13 +2,20 @@
 title: "外国人使用支付宝完全指南"
 description: "完整指南：如何用外国手机号和国际银行卡注册并使用支付宝。"
 lang: zh
+category: living-services
+subcategory: payment
+icon: 💳
 country: china
 city: beijing
+location: 全国通用
 tags:
   - 支付
   - 支付宝
   - 中国
   - 数字钱包
+difficulty: 简单
+duration: 30分钟
+featured: true
 publishedAt: 2026-05-28
 ---
 
